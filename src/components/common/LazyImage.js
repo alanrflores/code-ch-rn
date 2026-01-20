@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import {
   Image,
   View,
+  Text,
   StyleSheet,
   Animated,
   ActivityIndicator,
@@ -47,7 +48,8 @@ const LazyImage = ({
       )}
       {hasError && (
         <View style={styles.errorContainer}>
-          <View style={styles.errorIcon} />
+          <Text style={styles.errorIcon}>🖼️</Text>
+          <Text style={styles.errorText}>Imagen no disponible</Text>
         </View>
       )}
       {!hasError && (
@@ -84,12 +86,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#2a2a2a',
+    padding: 8,
   },
   errorIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#444',
+    fontSize: 32,
+    marginBottom: 4,
+  },
+  errorText: {
+    color: '#888',
+    fontSize: 11,
+    textAlign: 'center',
   },
 });
 

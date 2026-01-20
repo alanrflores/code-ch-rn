@@ -6,49 +6,45 @@ import {
   RefreshControl,
   Text,
   StatusBar,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import useCarousels from '../hooks/useCarousels';
 import Carousel from '../components/Carousel';
-import VideoPlayer from '../components/VideoPlayer';
-import LoadingSpinner from '../components/common/LoadingSpinner';
+import SkeletonPlaceholder from '../components/common/SkeletonPlaceholder';
+
+const toolboxLogo = require('../assets/toolbox-logo.png');
 
 const HomeScreen = () => {
+  const navigation = useNavigation();
   const {
     carousels,
-    selectedItem,
     isLoading,
     error,
     isEmpty,
     refetch,
-    selectItem,
-    clearSelectedItem,
   } = useCarousels();
 
-  // Manejo el clic en un item del carrusel
+  // Manejo el clic en un item del carrusel - navego a Detail
   const handleItemPress = useCallback(
     (item) => {
-      selectItem(item);
+      navigation.navigate('Detail', { item });
     },
-    [selectItem]
+    [navigation]
   );
-
-  // Manejo el cierre del video player
-  const handleVideoClose = useCallback(() => {
-    clearSelectedItem();
-  }, [clearSelectedItem]);
 
   // Manejo el pull-to-refresh
   const handleRefresh = useCallback(() => {
     refetch();
   }, [refetch]);
 
-  // Estado de carga
-  if (isLoading && isEmpty) {
+  // Estado de carga - muestra skeleton cuando no hay carousels aún
+  if (isLoading && carousels.length === 0) {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" />
-        <LoadingSpinner fullScreen message="Cargando contenido..." />
+        <SkeletonPlaceholder />
       </SafeAreaView>
     );
   }
@@ -88,7 +84,8 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Toolbox Challenge</Text>
+        <Image source={toolboxLogo} style={styles.headerLogo} />
+        <Text style={styles.headerTitle}>Toolbox</Text>
       </View>
       <ScrollView
         style={styles.scrollView}
@@ -112,11 +109,6 @@ const HomeScreen = () => {
           />
         ))}
       </ScrollView>
-      <VideoPlayer
-        item={selectedItem}
-        visible={selectedItem !== null}
-        onClose={handleVideoClose}
-      />
     </SafeAreaView>
   );
 };
@@ -127,15 +119,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#222',
+    borderBottomColor: '#1a1a2e',
+    backgroundColor: '#0a0a0f',
+  },
+  headerLogo: {
+    width: 44,
+    height: 44,
+    marginRight: 12,
+    borderRadius: 10,
+    resizeMode: 'cover',
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '700',
     color: '#fff',
+    letterSpacing: 0.5,
   },
   scrollView: {
     flex: 1,
@@ -175,7 +178,7 @@ const styles = StyleSheet.create({
   },
   retryText: {
     fontSize: 14,
-    color: '#4a9eff',
+    color: '#e50914',
     textDecorationLine: 'underline',
   },
 });

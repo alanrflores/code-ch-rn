@@ -1,6 +1,19 @@
 import React, { useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import LazyImage from '../common/LazyImage';
+
+const toolboxGoIcon = require('../../assets/toolbox-go.png');
+
+// Placeholder estilizado cuando no hay imagen disponible
+const MoviePlaceholder = ({ width, height, testID }) => (
+  <View style={[styles.placeholder, { width, height }]} testID={testID}>
+    <Image
+      source={toolboxGoIcon}
+      style={styles.placeholderIcon}
+      resizeMode="contain"
+    />
+  </View>
+);
 
 const CarouselItem = ({ item, dimensions, onPress, testID }) => {
   // Manejo el clic en el item
@@ -10,6 +23,8 @@ const CarouselItem = ({ item, dimensions, onPress, testID }) => {
     }
   }, [item, onPress]);
 
+  const hasImage = Boolean(item.imageUrl);
+
   return (
     <TouchableOpacity
       style={[styles.container, { width: dimensions.width }]}
@@ -17,30 +32,33 @@ const CarouselItem = ({ item, dimensions, onPress, testID }) => {
       activeOpacity={0.8}
       testID={testID}
     >
-      <LazyImage
-        source={item.imageUrl}
-        style={[
-          styles.image,
-          { width: dimensions.width, height: dimensions.height },
-        ]}
-        testID={`${testID}-image`}
-      />
-      <View style={styles.titleContainer}>
-        <Text style={styles.title} numberOfLines={2}>
-          {item.title}
-        </Text>
+      <View style={styles.imageContainer}>
+        {hasImage ? (
+          <LazyImage
+            source={item.imageUrl}
+            style={[
+              styles.image,
+              { width: dimensions.width, height: dimensions.height },
+            ]}
+            testID={`${testID}-image`}
+          />
+        ) : (
+          <MoviePlaceholder
+            width={dimensions.width}
+            height={dimensions.height}
+            testID={`${testID}-placeholder`}
+          />
+        )}
+        {item.hasVideo && (
+          <View style={styles.videoBadge}>
+            <Text style={styles.videoBadgeText}>Ver ahora</Text>
+          </View>
+        )}
       </View>
 
-      {item.hasVideo && (
-        <View
-          style={styles.playIndicator}
-          accessible={true}
-          accessibilityRole="image"
-          accessibilityLabel="Tiene video disponible"
-        >
-          <Text style={styles.playIcon}>▶</Text>
-        </View>
-      )}
+      <Text style={styles.title} numberOfLines={2}>
+        {item.title}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -48,6 +66,8 @@ const CarouselItem = ({ item, dimensions, onPress, testID }) => {
 const styles = StyleSheet.create({
   container: {
     marginRight: 10,
+  },
+  imageContainer: {
     borderRadius: 8,
     overflow: 'hidden',
     backgroundColor: '#1a1a1a',
@@ -55,39 +75,35 @@ const styles = StyleSheet.create({
   image: {
     borderRadius: 8,
   },
-  titleContainer: {
-    padding: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+  placeholder: {
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#2d2d2d',
+  },
+  placeholderIcon: {
+    width: 80,
+    height: 80,
   },
   title: {
     color: '#fff',
     fontSize: 12,
     fontWeight: '500',
+    marginTop: 8,
   },
-  playIndicator: {
+  videoBadge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    elevation: 3,
+    bottom: 8,
+    left: 8,
+    backgroundColor: 'rgba(229, 9, 20, 0.9)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 4,
   },
-  playIcon: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    marginLeft: 2,
+  videoBadgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
   },
 });
 

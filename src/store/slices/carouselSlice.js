@@ -13,10 +13,11 @@ import { getCarousels, transformCarouselData } from '../../api/carouselService';
 import { ensureValidTokenThunk } from './authSlice';
 
 // Initial state
+// isLoading empieza en true porque auto-fetch dispara al montar
 const initialState = {
   carousels: [],
   selectedItem: null, // Item selected for video playback
-  isLoading: false,
+  isLoading: true,
   error: null,
   lastFetched: null, // Timestamp for cache validation
 };

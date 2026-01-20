@@ -171,6 +171,32 @@ El token incluye un campo `expireDate` que se usa para refrescar automáticament
 | react-native-video | ^6.9.0 | Reproductor de video |
 | react-native-safe-area-context | ^5.5.2 | Safe area handling |
 
+## Nota
+
+### Imágenes del API
+
+El API devuelve URLs de imágenes que apuntan a `http://placeimg.com`:
+
+```json
+{
+  "imageUrl": "http://placeimg.com/640/480/any"
+}
+```
+
+**Problema:** El dominio `placeimg.com` fue discontinuado y ya no resuelve en DNS:
+
+```bash
+$ nslookup placeimg.com
+*** Can't find placeimg.com: No answer
+
+$ curl http://placeimg.com/640/480/any
+curl: (6) Could not resolve host: placeimg.com
+```
+
+**Solución implementada:** Se reemplazaron las URLs por imágenes de `https://picsum.photos`, un servicio de placeholder activo. El código está preparado para usar las URLs originales del API cuando el servicio de imágenes sea actualizado.
+
+---
+
 ## Troubleshooting
 
 ### iOS: "No bundle URL present"

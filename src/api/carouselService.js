@@ -17,18 +17,14 @@ export const getCarousels = async () => {
   }
 };
 
-// Fijo las URLs de las imágenes que están caidas
-// Reemplazo placeimg.com por picsum.photos
+// Valido y limpio las URLs de imágenes
+// placeimg.com está muerto (DNS no resuelve), devuelvo null para usar placeholder local
 const fixBrokenImageUrl = (url) => {
   if (!url) return null;
 
-  // Reemplazo placeimg.com con picsum.photos
-  const placeImgRegex = /^https?:\/\/placeimg\.com\/(\d+)\/(\d+)/i;
-  const match = url.match(placeImgRegex);
-
-  if (match) {
-    const [, width, height] = match;
-    return `https://picsum.photos/${width}/${height}`;
+  // placeimg.com está muerto - devuelvo null para mostrar placeholder estilizado
+  if (/^https?:\/\/placeimg\.com/i.test(url)) {
+    return null;
   }
 
   // Convierto http a https para otras URLs
