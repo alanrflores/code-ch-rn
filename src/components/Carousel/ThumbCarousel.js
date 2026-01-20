@@ -16,6 +16,7 @@ const ThumbCarousel = ({ carousel, onItemPress, testID }) => {
         item={item}
         dimensions={{ width: THUMB_WIDTH, height: THUMB_HEIGHT }}
         onPress={onItemPress}
+        variant="thumb"
         testID={`${testID}-item-${index}`}
       />
     ),

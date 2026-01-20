@@ -17,6 +17,7 @@ const PosterCarousel = ({ carousel, onItemPress, testID }) => {
         item={item}
         dimensions={{ width: POSTER_WIDTH, height: POSTER_HEIGHT }}
         onPress={onItemPress}
+        variant="poster"
         testID={`${testID}-item-${index}`}
       />
     ),

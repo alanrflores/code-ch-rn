@@ -15,7 +15,7 @@ const MoviePlaceholder = ({ width, height, testID }) => (
   </View>
 );
 
-const CarouselItem = ({ item, dimensions, onPress, testID }) => {
+const CarouselItem = ({ item, dimensions, onPress, variant = 'thumb', testID }) => {
   // Manejo el clic en el item
   const handlePress = useCallback(() => {
     if (onPress) {
@@ -24,6 +24,7 @@ const CarouselItem = ({ item, dimensions, onPress, testID }) => {
   }, [item, onPress]);
 
   const hasImage = Boolean(item.imageUrl);
+  const isPoster = variant === 'poster';
 
   return (
     <TouchableOpacity
@@ -35,33 +36,69 @@ const CarouselItem = ({ item, dimensions, onPress, testID }) => {
       accessibilityLabel={`${item.title}${item.hasVideo ? ', tiene video disponible' : ''}`}
       accessibilityHint="Toca para ver detalles"
     >
-      <View style={styles.imageContainer}>
-        {hasImage ? (
-          <LazyImage
-            source={item.imageUrl}
-            style={[
-              styles.image,
-              { width: dimensions.width, height: dimensions.height },
-            ]}
-            testID={`${testID}-image`}
-          />
-        ) : (
-          <MoviePlaceholder
-            width={dimensions.width}
-            height={dimensions.height}
-            testID={`${testID}-placeholder`}
-          />
-        )}
-        {item.hasVideo && (
-          <View style={styles.videoBadge}>
-            <Text style={styles.videoBadgeText}>Ver ahora</Text>
+      {/* Poster: card con borde que incluye imagen + título */}
+      {isPoster ? (
+        <View style={styles.posterCard}>
+          <View style={[styles.posterImageContainer, { height: dimensions.height - 32 }]}>
+            {hasImage ? (
+              <LazyImage
+                source={item.imageUrl}
+                style={[
+                  styles.image,
+                  { width: dimensions.width, height: dimensions.height - 32 },
+                ]}
+                testID={`${testID}-image`}
+              />
+            ) : (
+              <MoviePlaceholder
+                width={dimensions.width}
+                height={dimensions.height - 32}
+                testID={`${testID}-placeholder`}
+              />
+            )}
+            {item.hasVideo && (
+              <View style={styles.videoBadge}>
+                <Text style={styles.videoBadgeText}>Ver ahora</Text>
+              </View>
+            )}
           </View>
-        )}
-      </View>
-
-      <Text style={styles.title} numberOfLines={2}>
-        {item.title}
-      </Text>
+          <View style={styles.posterTitleContainer}>
+            <Text style={styles.posterTitle} numberOfLines={1}>
+              {item.title}
+            </Text>
+          </View>
+        </View>
+      ) : (
+        /* Thumb: imagen con título afuera */
+        <>
+          <View style={[styles.imageContainer, { height: dimensions.height }]}>
+            {hasImage ? (
+              <LazyImage
+                source={item.imageUrl}
+                style={[
+                  styles.image,
+                  { width: dimensions.width, height: dimensions.height },
+                ]}
+                testID={`${testID}-image`}
+              />
+            ) : (
+              <MoviePlaceholder
+                width={dimensions.width}
+                height={dimensions.height}
+                testID={`${testID}-placeholder`}
+              />
+            )}
+            {item.hasVideo && (
+              <View style={styles.videoBadge}>
+                <Text style={styles.videoBadgeText}>Ver ahora</Text>
+              </View>
+            )}
+          </View>
+          <Text style={styles.title} numberOfLines={2}>
+            {item.title}
+          </Text>
+        </>
+      )}
     </TouchableOpacity>
   );
 };
@@ -70,6 +107,29 @@ const styles = StyleSheet.create({
   container: {
     marginRight: 10,
   },
+  // Poster styles - card con borde
+  posterCard: {
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#333',
+    overflow: 'hidden',
+    backgroundColor: '#1a1a1a',
+  },
+  posterImageContainer: {
+    overflow: 'hidden',
+  },
+  posterTitleContainer: {
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    backgroundColor: '#1a1a1a',
+  },
+  posterTitle: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  // Thumb styles - imagen con título afuera
   imageContainer: {
     borderRadius: 8,
     overflow: 'hidden',
@@ -93,7 +153,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     marginTop: 8,
+    textAlign: 'center',
   },
+  // Badge styles
   videoBadge: {
     position: 'absolute',
     bottom: 8,
