@@ -1,15 +1,20 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
+
+// Este componente es PURAMENTE DECORATIVO.
+// Los botones de Compartir y Descargar NO tienen funcionalidad implementada.
 
 const ActionButtons = ({ testID }) => {
-  // Botones decorativos - no tienen funcionalidad real
-  // Solo estan para completar el diseño estilo Netflix
   return (
     <View style={styles.container} testID={testID}>
       <TouchableOpacity
         style={styles.actionButton}
         activeOpacity={0.7}
         testID={`${testID}-share`}
+        accessibilityRole="button"
+        accessibilityLabel="Compartir contenido"
+        accessibilityHint="Funcionalidad no disponible en esta versión"
       >
         <Text style={styles.actionIcon}>↗</Text>
         <Text style={styles.actionText}>Compartir</Text>
@@ -19,6 +24,9 @@ const ActionButtons = ({ testID }) => {
         style={styles.actionButton}
         activeOpacity={0.7}
         testID={`${testID}-download`}
+        accessibilityRole="button"
+        accessibilityLabel="Descargar contenido"
+        accessibilityHint="Funcionalidad no disponible en esta versión"
       >
         <Text style={styles.actionIcon}>↓</Text>
         <Text style={styles.actionText}>Descargar</Text>

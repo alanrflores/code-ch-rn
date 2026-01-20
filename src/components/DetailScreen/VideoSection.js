@@ -41,6 +41,7 @@ const VideoSection = ({
   const hasVideo = item?.videoUrl && item.videoUrl.trim() !== '';
 
   // Animacion de rotacion del loading ring
+  // spinAnim es un Animated.Value (ref estable), no necesita estar en deps
   useEffect(() => {
     if (isPlaying && isLoading) {
       const animation = Animated.loop(
@@ -56,7 +57,7 @@ const VideoSection = ({
     } else {
       spinAnim.setValue(0);
     }
-  }, [isPlaying, isLoading, spinAnim]);
+  }, [isPlaying, isLoading]);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],
@@ -89,6 +90,9 @@ const VideoSection = ({
       activeOpacity={0.8}
       testID={`${testID}-play-button`}
       disabled={isPlaying && isLoading}
+      accessibilityRole="button"
+      accessibilityLabel={isPlaying && isLoading ? 'Cargando video' : 'Reproducir video'}
+      accessibilityState={{ disabled: isPlaying && isLoading }}
     >
       {/* Loading ring animado */}
       {isPlaying && isLoading && (
@@ -116,6 +120,8 @@ const VideoSection = ({
           setError(null);
           onPlayPress();
         }}
+        accessibilityRole="button"
+        accessibilityLabel="Reintentar reproducción de video"
       >
         <Text style={styles.retryButtonText}>Reintentar</Text>
       </TouchableOpacity>
@@ -194,6 +200,8 @@ const VideoSection = ({
             onPress={onClose}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             testID={`${testID}-close-button`}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar reproductor de video"
           >
             <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>

@@ -1,20 +1,7 @@
-/**
- * LoadingSpinner Component
- * Reusable loading indicator
- */
-
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import PropTypes from 'prop-types';
 
-/**
- * LoadingSpinner - Full screen or inline loading indicator
- *
- * @param {object} props
- * @param {boolean} props.fullScreen - Whether to take full screen
- * @param {string} props.message - Optional loading message
- * @param {string} props.size - Spinner size ('small' | 'large')
- * @param {string} props.color - Spinner color
- */
 const LoadingSpinner = ({
   fullScreen = false,
   message,
@@ -51,5 +38,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+LoadingSpinner.propTypes = {
+  fullScreen: PropTypes.bool,
+  message: PropTypes.string,
+  size: PropTypes.oneOf(['small', 'large']),
+  color: PropTypes.string,
+};
 
 export default LoadingSpinner;

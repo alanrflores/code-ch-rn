@@ -7,6 +7,7 @@ import {
   Animated,
   ActivityIndicator,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const LazyImage = ({
   source,
@@ -20,6 +21,7 @@ const LazyImage = ({
   const [opacity] = useState(new Animated.Value(0));
 
   // Manejo el éxito de la carga de la imagen
+  // opacity es un Animated.Value (ref estable), no necesita estar en deps
   const handleLoad = useCallback(() => {
     setIsLoading(false);
     // Animación de fade-in
@@ -28,7 +30,7 @@ const LazyImage = ({
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [opacity]);
+  }, []);
 
   // Manejo el error de carga de la imagen
   const handleError = useCallback(() => {
@@ -98,5 +100,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+LazyImage.propTypes = {
+  source: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({
+      uri: PropTypes.string,
+    }),
+  ]).isRequired,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  resizeMode: PropTypes.oneOf(['cover', 'contain', 'stretch', 'center']),
+  testID: PropTypes.string,
+};
 
 export default LazyImage;

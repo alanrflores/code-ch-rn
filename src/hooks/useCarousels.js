@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchCarouselsThunk,
@@ -13,6 +13,8 @@ import { selectIsAuthenticated } from '../store/slices/authSlice';
 
 const useCarousels = (options = { autoFetch: true }) => {
   const dispatch = useDispatch();
+  // Track si ya hicimos fetch para evitar loops
+  const hasFetchedRef = useRef(false);
 
   // Selectores
   const carousels = useSelector(selectCarousels);
@@ -21,10 +23,10 @@ const useCarousels = (options = { autoFetch: true }) => {
   const error = useSelector(selectCarouselsError);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  // Obtengo los carruseles desde la API
-  const fetchCarousels = useCallback(async () => {
+  // Obtengo los carruseles desde la API (con cache validation automática en el thunk)
+  const fetchCarousels = useCallback(async (force = false) => {
     try {
-      await dispatch(fetchCarouselsThunk()).unwrap();
+      await dispatch(fetchCarouselsThunk({ force })).unwrap();
     } catch (err) {
       console.error('Failed to fetch carousels:', err);
     }
@@ -43,16 +45,19 @@ const useCarousels = (options = { autoFetch: true }) => {
     dispatch(clearItemAction());
   }, [dispatch]);
 
+  // Fuerza refetch ignorando cache
   const refetch = useCallback(() => {
-    return fetchCarousels();
+    return fetchCarousels(true);
   }, [fetchCarousels]);
 
-  // Auto-fetch si está habilitado
+  // Auto-fetch si está habilitado (solo una vez por mount)
+  // El thunk maneja cache validation internamente
   useEffect(() => {
-    if (options.autoFetch && carousels.length === 0) {
+    if (options.autoFetch && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
       fetchCarousels();
     }
-  }, [options.autoFetch, fetchCarousels, carousels.length]);
+  }, [options.autoFetch, fetchCarousels]);
 
   return {
     // Data

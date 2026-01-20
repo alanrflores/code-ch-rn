@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Skeleton item individual con animación de shimmer
-const SkeletonItem = ({ width, height, style }) => {
+// Memoizado para evitar re-renders innecesarios y re-creación de animaciones
+const SkeletonItem = memo(({ width, height, style }) => {
   const shimmerAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -24,7 +25,8 @@ const SkeletonItem = ({ width, height, style }) => {
     );
     animation.start();
     return () => animation.stop();
-  }, [shimmerAnim]);
+    // shimmerAnim es ref estable, no necesita estar en deps
+  }, []);
 
   const opacity = shimmerAnim.interpolate({
     inputRange: [0, 1],
@@ -40,7 +42,7 @@ const SkeletonItem = ({ width, height, style }) => {
       ]}
     />
   );
-};
+});
 
 // Skeleton de un carousel completo
 const SkeletonCarousel = ({ type = 'poster' }) => {

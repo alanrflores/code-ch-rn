@@ -7,9 +7,12 @@ const { width, height } = Dimensions.get('window');
 const AnimatedSplash = ({ onAnimationEnd }) => {
   const bounceAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const isMounted = useRef(true);
 
   useEffect(() => {
-    // Start bounce animation loop
+    isMounted.current = true;
+
+    // Bounce animation loop
     const bounceAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(bounceAnim, {
@@ -36,15 +39,20 @@ const AnimatedSplash = ({ onAnimationEnd }) => {
         duration: 300,
         useNativeDriver: true,
       }).start(() => {
-        onAnimationEnd?.();
+        // Solo llamamos onAnimationEnd si el componente sigue montado
+        if (isMounted.current) {
+          onAnimationEnd?.();
+        }
       });
     }, 2500);
 
     return () => {
+      isMounted.current = false;
       clearTimeout(timer);
       bounceAnimation.stop();
     };
-  }, [bounceAnim, fadeAnim, onAnimationEnd]);
+    // bounceAnim y fadeAnim son refs estables, no necesitan estar en deps
+  }, [onAnimationEnd]);
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>

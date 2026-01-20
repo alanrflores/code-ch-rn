@@ -1,16 +1,9 @@
-/**
- * Carousel Slice
- * Manages carousel data state with Redux Toolkit
- *
- * Responsibilities:
- * - Store carousel data from API
- * - Track selected item for video playback
- * - Handle loading and error states
- */
-
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import { getCarousels, transformCarouselData } from '../../api/carouselService';
 import { ensureValidTokenThunk } from './authSlice';
+
+// Cache duration: 5 minutos en milliseconds
+const CACHE_DURATION = 5 * 60 * 1000;
 
 // Initial state
 // isLoading empieza en true porque auto-fetch dispara al montar
@@ -22,21 +15,27 @@ const initialState = {
   lastFetched: null, // Timestamp for cache validation
 };
 
-/**
- * Async thunk to fetch carousels
- * Ensures valid token before making the request
- */
+// Async thunk para obtener los carruseles
 export const fetchCarouselsThunk = createAsyncThunk(
   'carousels/fetch',
-  async (_, { dispatch, rejectWithValue }) => {
+  async ({ force = false } = {}, { dispatch, getState, rejectWithValue }) => {
     try {
-      // Ensure we have a valid token first
+      // Validación de cache - omito la solicitud si los datos son frescos (a menos que se force)
+      const { lastFetched, carousels } = getState().carousels;
+      const isCacheValid = lastFetched && (Date.now() - lastFetched) < CACHE_DURATION;
+
+      if (!force && isCacheValid && carousels.length > 0) {
+        // Devuelvo los datos existentes para evitar una llamada a la API innecesaria
+        return carousels;
+      }
+
+      // Asegurome de tener un token válido primero
       await dispatch(ensureValidTokenThunk()).unwrap();
 
-      // Fetch carousel data
+      // Obtengo los datos del carrusel
       const data = await getCarousels();
 
-      // Transform data for display
+      // Transformo los datos para mostrarlos en la UI
       const transformedData = transformCarouselData(data);
 
       return transformedData;
@@ -46,36 +45,20 @@ export const fetchCarouselsThunk = createAsyncThunk(
   }
 );
 
-// Create the slice
+// Creo el slice
 const carouselSlice = createSlice({
   name: 'carousels',
   initialState,
   reducers: {
-    /**
-     * Sets the selected item for video playback
-     * @param {object} action.payload - The carousel item to play
-     */
     selectItem: (state, action) => {
       state.selectedItem = action.payload;
     },
-
-    /**
-     * Clears the selected item (close video player)
-     */
     clearSelectedItem: (state) => {
       state.selectedItem = null;
     },
-
-    /**
-     * Clears error state
-     */
     clearError: (state) => {
       state.error = null;
     },
-
-    /**
-     * Clears all carousel data (for logout)
-     */
     clearCarousels: (state) => {
       state.carousels = [];
       state.selectedItem = null;
@@ -111,13 +94,22 @@ export const selectCarousels = (state) => state.carousels.carousels;
 export const selectSelectedItem = (state) => state.carousels.selectedItem;
 export const selectCarouselsLoading = (state) => state.carousels.isLoading;
 export const selectCarouselsError = (state) => state.carousels.error;
+export const selectLastFetched = (state) => state.carousels.lastFetched;
 
 /**
- * Memoized selector for carousels by type
- * Useful when you need to get only poster or thumb carousels
+ * Memoized selector for carousels by type , memorio
+ * Uses createSelector to avoid re-computation on every render
+ * Factory function pattern for parameterized selectors
  */
-export const selectCarouselsByType = (type) => (state) =>
-  state.carousels.carousels.filter((carousel) => carousel.type === type);
+export const makeSelectCarouselsByType = (type) =>
+  createSelector(
+    [selectCarousels],
+    (carousels) => carousels.filter((carousel) => carousel.type === type)
+  );
+
+// Selectores pre-creados para los tipos comunes (evito crear nuevos selectores por render)
+export const selectPosterCarousels = makeSelectCarouselsByType('poster');
+export const selectThumbCarousels = makeSelectCarouselsByType('thumb');
 
 // Export reducer
 export default carouselSlice.reducer;

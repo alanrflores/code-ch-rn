@@ -12,7 +12,7 @@ const InfoSection = ({ item, hasVideo, onFullscreenPlay, testID }) => {
         {item?.title || 'Sin titulo'}
       </Text>
 
-      {/* Botones de accion - estilo Netflix */}
+      {/* Botones de accion */}
       <View style={styles.buttonsRow}>
         {/* Boton Reproducir Ahora - entra en fullscreen (solo si hay video) */}
         {hasVideo && (
@@ -21,6 +21,8 @@ const InfoSection = ({ item, hasVideo, onFullscreenPlay, testID }) => {
             onPress={onFullscreenPlay}
             activeOpacity={0.8}
             testID={`${testID}-play-button`}
+            accessibilityRole="button"
+            accessibilityLabel={`Reproducir ${item?.title || 'video'} en pantalla completa`}
           >
             <Text style={styles.buttonIcon}>▶</Text>
             <Text style={styles.playButtonText}>REPRODUCIR AHORA</Text>
@@ -32,6 +34,8 @@ const InfoSection = ({ item, hasVideo, onFullscreenPlay, testID }) => {
           style={styles.listButton}
           activeOpacity={0.8}
           testID={`${testID}-list-button`}
+          accessibilityRole="button"
+          accessibilityLabel={`Agregar ${item?.title || 'contenido'} a mi lista`}
         >
           <Text style={styles.buttonIcon}>+</Text>
           <Text style={styles.listButtonText}>MI LISTA</Text>

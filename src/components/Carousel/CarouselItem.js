@@ -31,6 +31,9 @@ const CarouselItem = ({ item, dimensions, onPress, testID }) => {
       onPress={handlePress}
       activeOpacity={0.8}
       testID={testID}
+      accessibilityRole="button"
+      accessibilityLabel={`${item.title}${item.hasVideo ? ', tiene video disponible' : ''}`}
+      accessibilityHint="Toca para ver detalles"
     >
       <View style={styles.imageContainer}>
         {hasImage ? (
