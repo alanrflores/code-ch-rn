@@ -10,13 +10,18 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-navigation/native": "^7.1.28",
+    "@react-navigation/stack": "^7.6.16",
+    "@reduxjs/toolkit": "^2.5.1",
+    "axios": "^1.7.9",
     "react": "19.2.0",
     "react-native": "0.83.1",
+    "react-native-gesture-handler": "^2.30.0",
+    "react-native-orientation-locker": "^1.7.0",
     "react-native-safe-area-context": "^5.5.2",
-    "@reduxjs/toolkit": "^2.5.1",
-    "react-redux": "^9.2.0",
-    "axios": "^1.7.9",
-    "react-native-video": "^6.9.0"
+    "react-native-screens": "^4.20.0",
+    "react-native-video": "^6.9.0",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
