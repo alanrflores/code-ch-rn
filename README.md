@@ -2,6 +2,33 @@
 
 Aplicación React Native que consume un API REST para mostrar carruseles de contenido multimedia con reproducción de video.
 
+## Screenshots
+
+### Splash Screen
+<p align="center">
+  <img src="docs/screenshots/04-splash-screen.png" width="600" alt="Splash Screen - Android & iOS" />
+</p>
+
+### Home - Carousels
+<p align="center">
+  <img src="docs/screenshots/01-home-carousels.png" width="600" alt="Home Screen con Carousels" />
+</p>
+
+### Detail Screen
+<p align="center">
+  <img src="docs/screenshots/02-detail-screen.png" width="600" alt="Detail Screen con Video Player" />
+</p>
+
+### Video Fullscreen
+<p align="center">
+  <img src="docs/screenshots/03-video-fullscreen.png" width="800" alt="Video en modo Fullscreen" />
+</p>
+
+### App Icon
+<p align="center">
+  <img src="docs/screenshots/05-app-icon.png" width="600" alt="App Icon en Home Screen" />
+</p>
+
 ## Requisitos Previos
 
 - **Node.js** >= 20
