@@ -14,9 +14,14 @@ Aplicación React Native que consume un API REST para mostrar carruseles de cont
   <img src="docs/screenshots/01-home-carousels.png" width="600" alt="Home Screen con Carousels" />
 </p>
 
-### Detail Screen
+### Detail Screen (con video)
 <p align="center">
-  <img src="docs/screenshots/02-detail-screen.png" width="600" alt="Detail Screen con Video Player" />
+  <img src="docs/screenshots/02-detail-screen.png" width="600" alt="Detail Screen con Video" />
+</p>
+
+### Detail Screen (sin video)
+<p align="center">
+  <img src="docs/screenshots/02b-detail-no-video.png" width="600" alt="Detail Screen sin Video" />
 </p>
 
 ### Video Fullscreen
